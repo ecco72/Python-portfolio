@@ -1,0 +1,1006 @@
+登入本機的資料庫
+	mysql -u root -p
+
+連接到別人的資料庫
+	mysql -h 
+
+查看所有資料庫
+	mysql> show databases;
+
+建立資料庫 名稱lccsql 編碼utf8
+	mysql> create database lccsql default character set utf8 collate utf8_general_ci; 
+
+使用這個資料庫
+	mysql> use lccsql;
+
+建立資料表
+	mysql> create table students(
+	-> id int primary key auto_increment,
+	-> name varchar(50),
+	-> sex varchar(2) not null,
+	-> age int(2),
+	-> birthday date,
+	-> address varchar(255));  
+
+查看所有建立的欄位
+	mysql> show columns from students; 
+
+選取students內所有資料
+	mysql> select * from students; 
+
+在資料表students內建立資料
+	mysql> insert into students(name,sex,age,birthday,address) values('Ecco','M',25,'1998-12-08','台中市豐原區萬順一街70號'); 
+
+選擇某幾個欄位
+	mysql> select name, sex, address from students;
+
+將address設定別名
+	mysql> select name, sex, address as addr from students;
+	+------+-----+--------------------------------------+
+	| name | sex | addr                                 |
+	+------+-----+--------------------------------------+
+	| Bill | F   | 台中市中區建國路101號                |
+	| Ecco | M   | 台中市豐原區萬順一街70號             |
+	| Eva  | F   | 台中市豐原區萬順一街70號             |
+	| Mary | F   | 台北市大安區忠孝東路100號            |
+	| Jack | M   | 台中市太平區溪洲路48號               |
+	| Jonh | M   | 台南市東區中山路87號                 |
+	+------+-----+--------------------------------------+
+
+依照name進行從小到大排序
+	mysql> select * from students order by name;
+
+desc從大到小
+	mysql> select * from students order by name desc;
+
+可以排序兩個 沒有加上desc就是從小到大
+	mysql> select * from students order by sex desc, age;
+	+----+------+-----+------+------------+--------------------------------------+
+	| id | name | sex | age  | birthday   | address                              |
+	+----+------+-----+------+------------+--------------------------------------+
+	|  5 | Jack | M   |   24 | 1999-08-20 | 台中市太平區溪洲路48號               |
+	|  2 | Ecco | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號             |
+	|  6 | Jonh | M   |   30 | 1993-06-22 | 台南市東區中山路87號                 |
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號                |
+	|  4 | Mary | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            |
+	|  3 | Eva  | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號             |
+	+----+------+-----+------+------------+--------------------------------------+
+	6 rows in set (0.00 sec)
+
+加上desc後就是從大到小
+	mysql> select * from students order by sex desc, age desc;
+	+----+------+-----+------+------------+--------------------------------------+
+	| id | name | sex | age  | birthday   | address                              |
+	+----+------+-----+------+------------+--------------------------------------+
+	|  6 | Jonh | M   |   30 | 1993-06-22 | 台南市東區中山路87號                 |
+	|  2 | Ecco | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號             |
+	|  5 | Jack | M   |   24 | 1999-08-20 | 台中市太平區溪洲路48號               |
+	|  3 | Eva  | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號             |
+	|  4 | Mary | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            |
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號                |
+	+----+------+-----+------+------------+--------------------------------------+
+
+distinct排除重複項
+	mysql> select distinct sex from students;
+	+-----+
+	| sex |
+	+-----+
+	| F   |
+	| M   |
+	+-----+
+	2 rows in set (0.00 sec)
+
+where 條件式
+	mysql> select * from students where sex='f';
+	+----+------+-----+------+------------+--------------------------------------+
+	| id | name | sex | age  | birthday   | address                              |
+	+----+------+-----+------+------------+--------------------------------------+
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號                |
+	|  3 | Eva  | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號             |
+	|  4 | Mary | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            |
+	+----+------+-----+------+------------+--------------------------------------+
+	3 rows in set (0.00 sec)
+
+	mysql> select * from students where name like 'E%';
+	+----+------+-----+------+------------+-------------------------------------+
+	| id | name | sex | age  | birthday   | address                             |
+	+----+------+-----+------+------------+-------------------------------------+
+	|  2 | Ecco | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號            |
+	|  3 | Eva  | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號            |
+	+----+------+-----+------+------------+-------------------------------------+
+	2 rows in set (0.00 sec)
+
+	mysql> select * from students where age>20;
+	+----+------+-----+------+------------+--------------------------------------+
+	| id | name | sex | age  | birthday   | address                              |
+	+----+------+-----+------+------------+--------------------------------------+
+	|  2 | Ecco | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號             |
+	|  3 | Eva  | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號             |
+	|  4 | Mary | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            |
+	|  5 | Jack | M   |   24 | 1999-08-20 | 台中市太平區溪洲路48號               |
+	|  6 | Jonh | M   |   30 | 1993-06-22 | 台南市東區中山路87號                 |
+	+----+------+-----+------+------------+--------------------------------------+
+	5 rows in set (0.00 sec)
+
+	mysql> select * from students where sex <> 'f';
+	+----+------+-----+------+------------+-------------------------------------+
+	| id | name | sex | age  | birthday   | address                             |
+	+----+------+-----+------+------------+-------------------------------------+
+	|  2 | Ecco | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號            |
+	|  5 | Jack | M   |   24 | 1999-08-20 | 台中市太平區溪洲路48號              |
+	|  6 | Jonh | M   |   30 | 1993-06-22 | 台南市東區中山路87號                |
+	+----+------+-----+------+------------+-------------------------------------+
+	3 rows in set (0.00 sec)
+
+	mysql> select * from students where age between 20 and 24;
+	+----+------+-----+------+------------+--------------------------------------+
+	| id | name | sex | age  | birthday   | address                              |
+	+----+------+-----+------+------------+--------------------------------------+
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號                |
+	|  4 | Mary | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            |
+	|  5 | Jack | M   |   24 | 1999-08-20 | 台中市太平區溪洲路48號               |
+	+----+------+-----+------+------------+--------------------------------------+
+	3 rows in set (0.00 sec)
+
+	mysql> select * from students where age >= 20 and age <=24;
+	+----+------+-----+------+------------+--------------------------------------+
+	| id | name | sex | age  | birthday   | address                              |
+	+----+------+-----+------+------------+--------------------------------------+
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號                |
+	|  4 | Mary | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            |
+	|  5 | Jack | M   |   24 | 1999-08-20 | 台中市太平區溪洲路48號               |
+	+----+------+-----+------+------------+--------------------------------------+
+	3 rows in set (0.00 sec)
+
+date的篩選
+	mysql> select * from students where birthday between '1996-01-01' and '1999-01-01';
+	+----+------+-----+------+------------+-------------------------------------+
+	| id | name | sex | age  | birthday   | address                             |
+	+----+------+-----+------+------------+-------------------------------------+
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號               |
+	|  2 | Ecco | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號            |
+	|  3 | Eva  | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號            |
+	+----+------+-----+------+------------+-------------------------------------+
+	3 rows in set (0.00 sec)
+
+使用or 或是 in
+	mysql> select * from students where age = 20 or age = 25 or age =30;
+	+----+------+-----+------+------------+-------------------------------------+
+	| id | name | sex | age  | birthday   | address                             |
+	+----+------+-----+------+------------+-------------------------------------+
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號               |
+	|  2 | Ecco | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號            |
+	|  3 | Eva  | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號            |
+	|  6 | Jonh | M   |   30 | 1993-06-22 | 台南市東區中山路87號                |
+	+----+------+-----+------+------------+-------------------------------------+
+	4 rows in set (0.00 sec)
+
+	mysql> select * from students where age in (20,25,30);
+	+----+------+-----+------+------------+-------------------------------------+
+	| id | name | sex | age  | birthday   | address                             |
+	+----+------+-----+------+------------+-------------------------------------+
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號               |
+	|  2 | Ecco | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號            |
+	|  3 | Eva  | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號            |
+	|  6 | Jonh | M   |   30 | 1993-06-22 | 台南市東區中山路87號                |
+	+----+------+-----+------+------------+-------------------------------------+
+	4 rows in set (0.00 sec)
+	
+and 和 or 一起用
+	mysql> select * from students where (sex='M' and age = 25) or (sex='F' and age = 20);
+	+----+------+-----+------+------------+-------------------------------------+
+	| id | name | sex | age  | birthday   | address                             |
+	+----+------+-----+------+------------+-------------------------------------+
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號               |
+	|  2 | Ecco | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號            |
+	+----+------+-----+------+------------+-------------------------------------+
+	2 rows in set (0.00 sec)
+	
+使用like模糊搜尋
+	mysql> select * from students where address like '%路%';
+	+----+------+-----+------+------------+--------------------------------------+
+	| id | name | sex | age  | birthday   | address                              |
+	+----+------+-----+------+------------+--------------------------------------+
+	|  1 | Bill | F   |   20 | 1996-03-11 | 台中市中區建國路101號                |
+	|  4 | Mary | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            |
+	|  5 | Jack | M   |   24 | 1999-08-20 | 台中市太平區溪洲路48號               |
+	|  6 | Jonh | M   |   30 | 1993-06-22 | 台南市東區中山路87號                 |
+	+----+------+-----+------+------------+--------------------------------------+
+	4 rows in set (0.00 sec)
+	
+幾個底線_代表幾個字(MsSQL是用問號)
+	mysql> select * from students where name like '_妹';
+	+----+--------+-----+------+------------+--------------------------+
+	| id | name   | sex | age  | birthday   | address                  |
+	+----+--------+-----+------+------------+--------------------------+
+	|  8 | 妹妹   | M   |   16 | 2024-01-24 | 花蓮縣中正路101號        |
+	+----+--------+-----+------+------------+--------------------------+
+	1 row in set (0.00 sec)
+
+	mysql> select * from students where name like '__妹';
+	+----+-----------+-----+------+------------+------------------------+
+	| id | name      | sex | age  | birthday   | address                |
+	+----+-----------+-----+------+------------+------------------------+
+	|  7 | 張惠妹    | M   |   40 | 2024-03-13 | 台東市更生路1號        |
+	+----+-----------+-----+------+------------+------------------------+
+	1 row in set (0.00 sec)
+
+sum加總
+	mysql> select sum(sales) from store where storename='站前';
+	+------------+
+	| sum(sales) |
+	+------------+
+	|     104600 |
+	+------------+
+	1 row in set (0.00 sec)
+	
+加總輸出後欄位名字
+	mysql> select sum(sales) as total from store where storename='站前';
+	+--------+
+	| total  |
+	+--------+
+	| 104600 |
+	+--------+
+	1 row in set (0.00 sec)
+
+計算欄位個數count 計算平均avg
+	mysql> select sum(sales) as total, avg(sales), count(storename) from store where storename='站前';
+	+--------+------------+------------------+
+	| total  | avg(sales) | count(storename) |
+	+--------+------------+------------------+
+	| 104600 | 34866.6667 |                3 |
+	+--------+------------+------------------+
+	1 row in set (0.01 sec)
+
+使用count(*)計算或是查看有無storename
+	mysql> select count(*) from store where storename='逢甲';
+	+----------+
+	| count(*) |
+	+----------+
+	|        0 |
+	+----------+
+	1 row in set (0.00 sec)
+	
+使用max min找出最大最小
+	mysql> select sum(sales) as total, max(sales) as maxp, min(sales) as minp from store where storename='站前';
+	+--------+-------+-------+
+	| total  | maxp  | minp  |
+	+--------+-------+-------+
+	| 104600 | 60000 | 12600 |
+	+--------+-------+-------+
+	1 row in set (0.01 sec)
+
+算出差距max - min
+	mysql> select sum(sales) as total, max(sales) as maxp, min(sales) as minp, max(sales)-min(sales) as diff from store where storename='站前';
+	+--------+-------+-------+-------+
+	| total  | maxp  | minp  | diff  |
+	+--------+-------+-------+-------+
+	| 104600 | 60000 | 12600 | 47400 |
+	+--------+-------+-------+-------+
+	1 row in set (0.00 sec)
+
+統一計算乘以0.8或是乘以1.15
+	mysql> select sales, sales*0.8 as onsale, sales * 1.15 as upsale from store;
+	+-------+---------+----------+
+	| sales | onsale  | upsale   |
+	+-------+---------+----------+
+	| 32000 | 25600.0 | 36800.00 |
+	| 12600 | 10080.0 | 14490.00 |
+	| 60000 | 48000.0 | 69000.00 |
+	|  2340 |  1872.0 |  2691.00 |
+	| 54101 | 43280.8 | 62216.15 |
+	| 70000 | 56000.0 | 80500.00 |
+	+-------+---------+----------+
+	6 rows in set (0.00 sec)
+	
+計算三民校區原本sales 在計算調薪5趴後的sales bosscry代表調薪前後老闆要多支出的錢
+	mysql> select sum(sales) as total, sum(sales)*1.05 as uptotal, sum(sales)*1.05-sum(sales) as bosscry from store where storename='三民';
+	+--------+-----------+---------+
+	| total  | uptotal   | bosscry |
+	+--------+-----------+---------+
+	| 126441 | 132763.05 | 6322.05 |
+	+--------+-----------+---------+
+	1 row in set (0.00 sec)
+	
+group by 結合聚合函式(要用甚麼group by 前面就要select甚麼)
+	mysql> select storename, sum(sales) as total from store group by storename;
+	+-----------+--------+
+	| storename | total  |
+	+-----------+--------+
+	| 站前      | 104600 |
+	| 三民      | 126441 |
+	+-----------+--------+
+	2 rows in set (0.00 sec)
+	
+	mysql> select salesday, sum(sales) as total from store group by salesday;
+	+------------+--------+
+	| salesday   | total  |
+	+------------+--------+
+	| 2024-03-01 |  34340 |
+	| 2024-03-02 |  66701 |
+	| 2024-03-03 | 130000 |
+	+------------+--------+
+	3 rows in set (0.00 sec)
+	
+group by 大部分都不能使用where，因為聚合函式，會用having
+	mysql> select salesday, sum(sales) as total from store group by salesday having sum(sales) < 100000;
+	+------------+-------+
+	| salesday   | total |
+	+------------+-------+
+	| 2024-03-01 | 34340 |
+	| 2024-03-02 | 66701 |
+	+------------+-------+
+	2 rows in set (0.00 sec)
+	
+course 的lessonid tid sid 是外來鍵
+
+使用 course.tid = teacher.tid 將資料庫表格關聯
+	mysql> select * from course, teacher where course.tid = teacher.tid;
+	+----+----------+-------+-----+--------+------------+-------+-----------+------+------------+--------+------------------------------------+
+	| id | lessonid | tid   | sid | area   | opendate   | tid   | name      | sex  | birthday   | dep    | address
+	|
+	+----+----------+-------+-----+--------+------------+-------+-----------+------+------------+--------+------------------------------------+
+	|  1 |        1 | T0003 |   7 | 站前   | 2024-03-20 | T0003 | 阮經天    | M    | 2022-09-08 | 演員   | 台北市東區象山路象山1號
+	|
+	|  2 |        1 | T0003 |   3 | 站前   | 2024-03-20 | T0003 | 阮經天    | M    | 2022-09-08 | 演員   | 台北市東區象山路象山1號
+	|
+	|  3 |        1 | T0003 |   5 | 站前   | 2024-03-20 | T0003 | 阮經天    | M    | 2022-09-08 | 演員   | 台北市東區象山路象山1號
+	|
+	|  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 | T0001 | IU        | F    | 2023-08-16 | 演藝   | 韓國
+	|
+	|  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 | T0001 | IU        | F    | 2023-08-16 | 演藝   | 韓國
+	|
+	|  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 | T0001 | IU        | F    | 2023-08-16 | 演藝   | 韓國
+	|
+	|  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 | T0002 | 劉若英    | F    | 2022-11-15 | 資訊   | 新北市九份區九份路九號
+	|
+	+----+----------+-------+-----+--------+------------+-------+-----------+------+------------+--------+------------------------------------+
+	7 rows in set (0.00 sec)
+	
+改為選取全部的course和teacher裡面的name並且關聯
+	mysql> select course.*, teacher.name from course, teacher where course.tid = teacher.tid;
+	+----+----------+-------+-----+--------+------------+-----------+
+	| id | lessonid | tid   | sid | area   | opendate   | name      |
+	+----+----------+-------+-----+--------+------------+-----------+
+	|  1 |        1 | T0003 |   7 | 站前   | 2024-03-20 | 阮經天    |
+	|  2 |        1 | T0003 |   3 | 站前   | 2024-03-20 | 阮經天    |
+	|  3 |        1 | T0003 |   5 | 站前   | 2024-03-20 | 阮經天    |
+	|  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 | IU        |
+	|  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 | IU        |
+	|  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 | IU        |
+	|  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 | 劉若英    |
+	+----+----------+-------+-----+--------+------------+-----------+
+	7 rows in set (0.00 sec)
+
+可以用縮寫自定義course c, teacher t
+	mysql> select c.*, t.name from course c, teacher t where c.tid = t.tid;
+	+----+----------+-------+-----+--------+------------+-----------+
+	| id | lessonid | tid   | sid | area   | opendate   | name      |
+	+----+----------+-------+-----+--------+------------+-----------+
+	|  1 |        1 | T0003 |   7 | 站前   | 2024-03-20 | 阮經天    |
+	|  2 |        1 | T0003 |   3 | 站前   | 2024-03-20 | 阮經天    |
+	|  3 |        1 | T0003 |   5 | 站前   | 2024-03-20 | 阮經天    |
+	|  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 | IU        |
+	|  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 | IU        |
+	|  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 | IU        |
+	|  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 | 劉若英    |
+	+----+----------+-------+-----+--------+------------+-----------+
+	7 rows in set (0.00 sec)
+
+使用from xxx inner join yyy on 某個條件 (on相當於上面的where) 若條件不符合 則不會顯示
+	mysql> select course.*, teacher.name from course inner join teacher on course.tid = teacher.tid;
+	+----+----------+-------+-----+--------+------------+-----------+
+	| id | lessonid | tid   | sid | area   | opendate   | name      |
+	+----+----------+-------+-----+--------+------------+-----------+
+	|  1 |        1 | T0003 |   7 | 站前   | 2024-03-20 | 阮經天    |
+	|  2 |        1 | T0003 |   3 | 站前   | 2024-03-20 | 阮經天    |
+	|  3 |        1 | T0003 |   5 | 站前   | 2024-03-20 | 阮經天    |
+	|  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 | IU        |
+	|  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 | IU        |
+	|  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 | IU        |
+	|  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 | 劉若英    |
+	+----+----------+-------+-----+--------+------------+-----------+
+	7 rows in set (0.00 sec)
+
+再加上where篩選出符合on條件的老師內的女老師
+	mysql> select course.*, teacher.name from course inner join teacher on course.tid = teacher.tid where teacher.sex='F';
+	+----+----------+-------+-----+--------+------------+-----------+
+	| id | lessonid | tid   | sid | area   | opendate   | name      |
+	+----+----------+-------+-----+--------+------------+-----------+
+	|  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 | IU        |
+	|  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 | IU        |
+	|  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 | IU        |
+	|  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 | 劉若英    |
+	+----+----------+-------+-----+--------+------------+-----------+
+	4 rows in set (0.00 sec)
+
+再加上and搜尋地址是在九份的老師
+	mysql> select course.*, teacher.name from course inner join teacher on course.tid = teacher.tid where teacher.sex='F' and teacher.address like '%九份%';
+	+----+----------+-------+-----+--------+------------+-----------+
+	| id | lessonid | tid   | sid | area   | opendate   | name      |
+	+----+----------+-------+-----+--------+------------+-----------+
+	|  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 | 劉若英    |
+	+----+----------+-------+-----+--------+------------+-----------+
+	1 row in set (0.00 sec)
+
+篩選出劉若英老師開課的地點 使用distinct去除重複項次
+	mysql> select distinct course.area from course inner join teacher on course.tid = teacher.tid where teacher.name = '劉若英';
+	+--------+
+	| area   |
+	+--------+
+	| 逢甲   |
+	| 站前   |
+	+--------+
+	2 rows in set (0.00 sec)
+
+使用where加上group by(先where再group by)
+	mysql> select course.area, course.opendate from course inner join teacher on course.tid = teacher.tid where teacher.name = '劉若英' group by course.area;
+	+--------+------------+
+	| area   | opendate   |
+	+--------+------------+
+	| 逢甲   | 2024-03-20 |
+	| 站前   | 2024-06-20 |
+	+--------+------------+
+	2 rows in set (0.00 sec)
+
+關聯三張資料表
+	mysql> select lesson.title, lesson.score, course.area, course.opendate, teacher.name from lesson inner join course on lesson.id = course.lessonid inner join teacher on course.tid = teacher.tid;
+	+--------+-------+--------+------------+-----------+
+	| title  | score | area   | opendate   | name      |
+	+--------+-------+--------+------------+-----------+
+	| python |     2 | 站前   | 2024-03-20 | 阮經天    |
+	| python |     2 | 站前   | 2024-03-20 | 阮經天    |
+	| python |     2 | 站前   | 2024-03-20 | 阮經天    |
+	| SQL    |     1 | 三民   | 2024-04-01 | IU        |
+	| SQL    |     1 | 三民   | 2024-04-01 | IU        |
+	| SQL    |     1 | 三民   | 2024-04-01 | IU        |
+	| python |     2 | 逢甲   | 2024-03-20 | 劉若英    |
+	| python |     2 | 站前   | 2024-06-20 | 劉若英    |
+	| python |     2 | 站前   | 2024-06-20 | 劉若英    |
+	+--------+-------+--------+------------+-----------+
+	9 rows in set (0.00 sec)
+	
+關聯三張表格後加上where和group by(先where再group by)
+	mysql> select lesson.title, lesson.score, course.area, course.opendate, teacher.name from lesson inner join course on lesson.id = course.lessonid inner join teacher on course.tid = teacher.tid where teacher.name = '劉若英' group by course.opendate;
+	+--------+-------+--------+------------+-----------+
+	| title  | score | area   | opendate   | name      |
+	+--------+-------+--------+------------+-----------+
+	| python |     2 | 逢甲   | 2024-03-20 | 劉若英    |
+	| python |     2 | 站前   | 2024-06-20 | 劉若英    |
+	+--------+-------+--------+------------+-----------+
+	2 rows in set (0.00 sec)
+	
+使用left join 和 inner join不同的地方在於left join 會以left join前的表格為主，不符合on條件的也會列出null值
+	mysql> select lesson.*, course.area from lesson left join course on lesson.id = course.lessonid;
+	+----+--------+-------+--------------------------+--------+
+	| id | title  | score | bookname                 | area   |
+	+----+--------+-------+--------------------------+--------+
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  2 | SQL    |     1 | 連小朋友也會的SQL        | 三民   |
+	|  2 | SQL    |     1 | 連小朋友也會的SQL        | 三民   |
+	|  2 | SQL    |     1 | 連小朋友也會的SQL        | 三民   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  3 | HTML   |     1 | HTML快速學               | NULL   |
+	+----+--------+-------+--------------------------+--------+
+	9 rows in set (0.00 sec)
+
+	mysql> select lesson.*, course.area from lesson inner join course on lesson.id = course.lessonid;
+	+----+--------+-------+--------------------------+--------+
+	| id | title  | score | bookname                 | area   |
+	+----+--------+-------+--------------------------+--------+
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  2 | SQL    |     1 | 連小朋友也會的SQL        | 三民   |
+	|  2 | SQL    |     1 | 連小朋友也會的SQL        | 三民   |
+	|  2 | SQL    |     1 | 連小朋友也會的SQL        | 三民   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	+----+--------+-------+--------------------------+--------+
+	8 rows in set (0.00 sec)
+
+使用right join會以右側為主
+	mysql> select lesson.*, course.* from lesson right join course on lesson.id = course.lessonid;
+	+------+--------+-------+--------------------------+----+----------+-------+-----+--------+------------+
+	| id   | title  | score | bookname                 | id | lessonid | tid   | sid | area   | opendate   |
+	+------+--------+-------+--------------------------+----+----------+-------+-----+--------+------------+
+	|    1 | python |     2 | 30小時學會python         |  1 |        1 | T0003 |   7 | 站前   | 2024-03-20 |
+	|    1 | python |     2 | 30小時學會python         |  2 |        1 | T0003 |   3 | 站前   | 2024-03-20 |
+	|    1 | python |     2 | 30小時學會python         |  3 |        1 | T0003 |   5 | 站前   | 2024-03-20 |
+	|    1 | python |     2 | 30小時學會python         |  8 |        1 | T0002 |   1 | 站前   | 2024-06-20 |
+	|    1 | python |     2 | 30小時學會python         |  9 |        1 | T0002 |   2 | 站前   | 2024-06-20 |
+	|    2 | SQL    |     1 | 連小朋友也會的SQL        |  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 |
+	|    2 | SQL    |     1 | 連小朋友也會的SQL        |  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 |
+	|    2 | SQL    |     1 | 連小朋友也會的SQL        |  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 |
+	| NULL | NULL   |  NULL | NULL                     |  7 |        4 | T0002 |   5 | 逢甲   | 2024-03-20 |
+	+------+--------+-------+--------------------------+----+----------+-------+-----+--------+------------+
+	9 rows in set (0.00 sec)
+	
+insert into 加入
+update 更新現有的項目
+delete 刪除
+上述三個為破壞性語法(資料會異動)
+select 選擇
+上述為非破壞性語法(資料不會異動)
+
+將錯誤的lessonid update為3(SQL中更改的資料除了有備份以外會永久更改 要小心使用)
+	mysql> update course set lessonid=3 where id=7;
+	Query OK, 1 row affected (0.01 sec)
+	Rows matched: 1  Changed: 1  Warnings: 0
+	
+更改完之後再join就沒有null值
+	mysql> select lesson.*, course.area from lesson left join course on lesson.id = course.lessonid;
+	+----+--------+-------+--------------------------+--------+
+	| id | title  | score | bookname                 | area   |
+	+----+--------+-------+--------------------------+--------+
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  2 | SQL    |     1 | 連小朋友也會的SQL        | 三民   |
+	|  2 | SQL    |     1 | 連小朋友也會的SQL        | 三民   |
+	|  2 | SQL    |     1 | 連小朋友也會的SQL        | 三民   |
+	|  3 | HTML   |     1 | HTML快速學               | 逢甲   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	|  1 | python |     2 | 30小時學會python         | 站前   |
+	+----+--------+-------+--------------------------+--------+
+	9 rows in set (0.00 sec)
+
+	mysql> select lesson.*, course.* from lesson right join course on lesson.id = course.lessonid;
+	+------+--------+-------+--------------------------+----+----------+-------+-----+--------+------------+
+	| id   | title  | score | bookname                 | id | lessonid | tid   | sid | area   | opendate   |
+	+------+--------+-------+--------------------------+----+----------+-------+-----+--------+------------+
+	|    1 | python |     2 | 30小時學會python         |  1 |        1 | T0003 |   7 | 站前   | 2024-03-20 |
+	|    1 | python |     2 | 30小時學會python         |  2 |        1 | T0003 |   3 | 站前   | 2024-03-20 |
+	|    1 | python |     2 | 30小時學會python         |  3 |        1 | T0003 |   5 | 站前   | 2024-03-20 |
+	|    1 | python |     2 | 30小時學會python         |  8 |        1 | T0002 |   1 | 站前   | 2024-06-20 |
+	|    1 | python |     2 | 30小時學會python         |  9 |        1 | T0002 |   2 | 站前   | 2024-06-20 |
+	|    2 | SQL    |     1 | 連小朋友也會的SQL        |  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 |
+	|    2 | SQL    |     1 | 連小朋友也會的SQL        |  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 |
+	|    2 | SQL    |     1 | 連小朋友也會的SQL        |  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 |
+	|    3 | HTML   |     1 | HTML快速學               |  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 |
+	+------+--------+-------+--------------------------+----+----------+-------+-----+--------+------------+
+	9 rows in set (0.00 sec)
+
+update課程名稱和學分 update指定的資料表set要改成甚麼where要改的東西位置(id)
+	mysql> update lesson set title='HTML5 和 CSS3', score=3 where id=3;
+	Query OK, 1 row affected (0.01 sec)
+	Rows matched: 1  Changed: 1  Warnings: 0
+
+	mysql> select lesson.*, course.* from lesson right join course on lesson.id = course.lessonid;
+	+------+----------------+-------+--------------------------+----+----------+-------+-----+--------+------------+
+	| id   | title          | score | bookname                 | id | lessonid | tid   | sid | area   | opendate   |
+	+------+----------------+-------+--------------------------+----+----------+-------+-----+--------+------------+
+	|    1 | python         |     2 | 30小時學會python         |  1 |        1 | T0003 |   7 | 站前   | 2024-03-20 |
+	|    1 | python         |     2 | 30小時學會python         |  2 |        1 | T0003 |   3 | 站前   | 2024-03-20 |
+	|    1 | python         |     2 | 30小時學會python         |  3 |        1 | T0003 |   5 | 站前   | 2024-03-20 |
+	|    1 | python         |     2 | 30小時學會python         |  8 |        1 | T0002 |   1 | 站前   | 2024-06-20 |
+	|    1 | python         |     2 | 30小時學會python         |  9 |        1 | T0002 |   2 | 站前   | 2024-06-20 |
+	|    2 | SQL            |     1 | 連小朋友也會的SQL        |  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 |
+	|    2 | SQL            |     1 | 連小朋友也會的SQL        |  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 |
+	|    2 | SQL            |     1 | 連小朋友也會的SQL        |  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 |
+	|    3 | HTML5 和 CSS3  |     3 | HTML快速學               |  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 |
+	+------+----------------+-------+--------------------------+----+----------+-------+-----+--------+------------+
+	9 rows in set (0.00 sec)
+	
+delete from資料表where要刪除的資料位置
+	mysql> select * from course;
+	+----+----------+-------+-----+--------+------------+
+	| id | lessonid | tid   | sid | area   | opendate   |
+	+----+----------+-------+-----+--------+------------+
+	|  1 |        1 | T0003 |   7 | 站前   | 2024-03-20 |
+	|  2 |        1 | T0003 |   3 | 站前   | 2024-03-20 |
+	|  3 |        1 | T0003 |   5 | 站前   | 2024-03-20 |
+	|  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 |
+	|  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 |
+	|  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 |
+	|  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 |
+	|  8 |        1 | T0002 |   1 | 站前   | 2024-06-20 |
+	|  9 |        1 | T0002 |   2 | 站前   | 2024-06-20 |
+	+----+----------+-------+-----+--------+------------+
+	9 rows in set (0.00 sec)
+
+	mysql> delete from course where id = 3;
+	Query OK, 1 row affected (0.01 sec)
+
+	mysql> select * from course;
+	+----+----------+-------+-----+--------+------------+
+	| id | lessonid | tid   | sid | area   | opendate   |
+	+----+----------+-------+-----+--------+------------+
+	|  1 |        1 | T0003 |   7 | 站前   | 2024-03-20 |
+	|  2 |        1 | T0003 |   3 | 站前   | 2024-03-20 |
+	|  4 |        2 | T0001 |   5 | 三民   | 2024-04-01 |
+	|  5 |        2 | T0001 |   4 | 三民   | 2024-04-01 |
+	|  6 |        2 | T0001 |   3 | 三民   | 2024-04-01 |
+	|  7 |        3 | T0002 |   5 | 逢甲   | 2024-03-20 |
+	|  8 |        1 | T0002 |   1 | 站前   | 2024-06-20 |
+	|  9 |        1 | T0002 |   2 | 站前   | 2024-06-20 |
+	+----+----------+-------+-----+--------+------------+
+	8 rows in set (0.00 sec)
+
+insert into多筆資料
+	mysql> insert into course(lessonid,tid,sid,area,opendate) values(2,'T0001',6,'三民','2024-05-01'),(2,'T0001',3,'三民','2024-05-01'),(1,'T0002',1,'逢甲','2023-05-15');
+	Query OK, 3 rows affected (0.01 sec)
+	Records: 3  Duplicates: 0  Warnings: 0
+
+update 不加上where條件式的時候，會導致所有欄位被update
+delete from 資料表，不加上條件式的時也會刪除整個資料表
+	mysql> select * from students;
+	+----+-----------+-----+------+------------+--------------------------------------+
+	| id | name      | sex | age  | birthday   | address                              |
+	+----+-----------+-----+------+------------+--------------------------------------+
+	|  1 | Bill      | F   |   20 | 1996-03-11 | 台中市中區建國路101號                |
+	|  2 | Ecco      | M   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號             |
+	|  3 | Eva       | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號             |
+	|  4 | Mary      | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            |
+	|  5 | Jack      | M   |   24 | 1999-08-20 | 台中市太平區溪洲路48號               |
+	|  6 | Jonh      | M   |   30 | 1993-06-22 | 台南市東區中山路87號                 |
+	|  7 | 張惠妹    | M   |   40 | 2024-03-13 | 台東市更生路1號                      |
+	|  8 | 妹妹      | M   |   16 | 2024-01-24 | 花蓮縣中正路101號                    |
+	+----+-----------+-----+------+------------+--------------------------------------+
+	8 rows in set (0.00 sec)
+
+	mysql> update students set sex='F';
+	Query OK, 5 rows affected (0.01 sec)
+	Rows matched: 8  Changed: 5  Warnings: 0
+
+	mysql> select * from students;
+	+----+-----------+-----+------+------------+--------------------------------------+
+	| id | name      | sex | age  | birthday   | address                              |
+	+----+-----------+-----+------+------------+--------------------------------------+
+	|  1 | Bill      | F   |   20 | 1996-03-11 | 台中市中區建國路101號                |
+	|  2 | Ecco      | F   |   25 | 1998-12-08 | 台中市豐原區萬順一街70號             |
+	|  3 | Eva       | F   |   25 | 1998-09-20 | 台中市豐原區萬順一街70號             |
+	|  4 | Mary      | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            |
+	|  5 | Jack      | F   |   24 | 1999-08-20 | 台中市太平區溪洲路48號               |
+	|  6 | Jonh      | F   |   30 | 1993-06-22 | 台南市東區中山路87號                 |
+	|  7 | 張惠妹    | F   |   40 | 2024-03-13 | 台東市更生路1號                      |
+	|  8 | 妹妹      | F   |   16 | 2024-01-24 | 花蓮縣中正路101號                    |
+	+----+-----------+-----+------+------------+--------------------------------------+
+	8 rows in set (0.00 sec)
+
+drop table 資料表名稱，直接刪除table
+	mysql> show tables;
+	+------------------+
+	| Tables_in_lccsql |
+	+------------------+
+	| course           |
+	| lesson           |
+	| store            |
+	| students         |
+	| teacher          |
+	+------------------+
+	5 rows in set (0.00 sec)
+
+	mysql> drop table course;
+	Query OK, 0 rows affected (0.03 sec)
+
+	mysql> show tables;
+	+------------------+
+	| Tables_in_lccsql |
+	+------------------+
+	| lesson           |
+	| store            |
+	| students         |
+	| teacher          |
+	+------------------+
+	4 rows in set (0.01 sec)
+
+drop database 資料庫，直接刪除資料庫
+	mysql> drop database lccsql;
+	Query OK, 4 rows affected (0.08 sec)
+
+	mysql> show tables;
+	ERROR 1046 (3D000): No database selected
+
+如何上傳，建立一個空的database後離開到要匯入的sql檔案目錄
+	mysql> create database lccsql default character set utf8 collate utf8_general_ci;
+	Query OK, 1 row affected, 2 warnings (0.02 sec)
+
+	mysql> exit
+	Bye
+
+	C:\Users\ecco2\Desktop\code\sql>dir
+	 磁碟區 C 中的磁碟是 Windows
+	 磁碟區序號:  349B-F02F
+
+	 C:\Users\ecco2\Desktop\code\sql 的目錄
+
+	2024/03/18  07:22    <DIR>          .
+	2024/03/14  18:48    <DIR>          ..
+	2024/03/18  06:53             5,603 lccsql0315.sql
+	2024/03/18  07:16            38,764 sql.txt
+				   2 個檔案          44,367 位元組
+				   2 個目錄  818,363,232,256 位元組可用
+
+	C:\Users\ecco2\Desktop\code\sql>mysql -u root -p lccsql < lccsql0315.sql
+	Enter password: **********
+	
+子查詢：在一個SQL中有兩個以上的select
+	mysql> select * from country where Population>(select population from country where code='USA');
+	+------+-------+-----------+---------------------------+-------------+-----------+------------+----------------+-----------+-----------+--------------+------------------+--------------------------+---------+-------+
+	| Code | Name  | Continent | Region                    | SurfaceArea | IndepYear | Population | LifeExpectancy | GNP       | GNPOld    | LocalName    | GovernmentForm   | HeadOfState              | Capital | Code2 |
+	+------+-------+-----------+---------------------------+-------------+-----------+------------+----------------+-----------+-----------+--------------+------------------+--------------------------+---------+-------+
+	| CHN  | China | Asia      | Eastern Asia              |  9572900.00 |     -1523 | 1277558000 |           71.4 | 982268.00 | 917719.00 | Zhongquo     | People'sRepublic | Jiang Zemin              |    1891 | CN    |
+	| IND  | India | Asia      | Southern and Central Asia |  3287263.00 |      1947 | 1013662000 |           62.5 | 447114.00 | 430572.00 | Bharat/India | Federal Republic | Kocheril Raman Narayanan |    1109 | IN    |
+	+------+-------+-----------+---------------------------+-------------+-----------+------------+----------------+-----------+-----------+--------------+------------------+--------------------------+---------+-------+
+	2 rows in set (0.00 sec)
+
+子查詢 找尋GNP最大的國家
+	mysql> select * from country where GNP=(select max(GNP) from country);
+	+------+---------------+---------------+---------------+-------------+-----------+------------+----------------+------------+------------+---------------+------------------+----------------+---------+-------+
+	| Code | Name          | Continent     | Region        | SurfaceArea | IndepYear | Population | LifeExpectancy | GNP        | GNPOld     | LocalName     | GovernmentForm   | HeadOfState    | Capital | Code2 |
+	+------+---------------+---------------+---------------+-------------+-----------+------------+----------------+------------+------------+---------------+------------------+----------------+---------+-------+
+	| USA  | United States | North America | North America |  9363520.00 |      1776 |  278357000 |           77.1 | 8510700.00 | 8110900.00 | United States | Federal Republic | George W. Bush |    3813 | US    |
+	+------+---------------+---------------+---------------+-------------+-----------+------------+----------------+------------+------------+---------------+------------------+----------------+---------+-------+
+	1 row in set (0.00 sec)
+	
+子查詢有多個結果時 使用in
+	mysql> select * from country where code in (select CountryCode from city where Population>=9000000)
+
+多重查詢 limit 1 是因為min(GNP)有兩個國家一樣是6
+	mysql> select (select name from country where GNP=(select MAX(gnp) from country)) as maxcountry, (select name from country where GNP=(select MIN(gnp) from country where GNP>0)limit 1) as mincountry;
+	
+limit 用法第一個參數是指從第幾個開始抓 第二個參數是抓多少筆
+	mysql> select * from city limit 0,10;
+	mysql> select * from city limit 10,10;
+	mysql> select * from city limit 20,10;
+
+and內的內容可以用括號合併起來輸入
+	select * from country where Continent='Asia' and GovernmentForm='Republic'
+	select * from country where (Continent,GovernmentForm)=('Asia','Republic')
+
+合併輸入後再加上子查詢
+	select * from country where (Continent,GovernmentForm)=(select Continent ,GovernmentForm from country where name='Iraq')
+
+多筆資料要改成in	
+	select * from country where (Continent,gnp) in (select Continent, max(gnp) from country group by Continent)
+
+concat連結
+	mysql> select concat(name,'-',region,'-',gnp) from country where name='Japan';
+	+---------------------------------+
+	| concat(name,'-',region,'-',gnp) |
+	+---------------------------------+
+	| Japan-Eastern Asia-3787042.00   |
+	+---------------------------------+
+	1 row in set (0.00 sec)
+	
+	mysql> select concat('日本的gnp=', (select gnp from country where name='Japan'));
+	+-----------------------------------------------------------------------+
+	| concat('日本的gnp=', (select gnp from country where name='Japan'))    |
+	+-----------------------------------------------------------------------+
+	| 日本的gnp=3787042.00                                                  |
+	+-----------------------------------------------------------------------+
+	1 row in set (0.00 sec)
+	
+轉換大小寫
+	select lower(name), upper(name) from country
+
+去除空白
+	select trim(門市名稱) from 全聯門市業績
+	
+去除第一個字開頭是'A'的資料(不會更動到資料)
+	select trim(leading 'A' from 門市名稱) from 全聯門市業績
+
+計算印度人口占全世界人口比例
+	mysql> select (select population from country where name='india')/(select sum(Population) from country);
+	+-------------------------------------------------------------------------------------------+
+	| (select population from country where name='india')/(select sum(Population) from country) |
+	+-------------------------------------------------------------------------------------------+
+	|                                                                                    0.1668 |
+	+-------------------------------------------------------------------------------------------+
+	1 row in set (0.00 sec)
+
+當作抓出一個資料表
+	select name, gnp from (select * from country where Continent='Asia') asiacountry order by GNP desc limit 5
+
+	select name, Language, population*Percentage from country, (select CountryCode,Language,Percentage from countrylanguage where IsOfficial='T') t where code = CountryCode
+
+insert into一堆資料(因為全部填入，mycountry後面沒有指定的欄位是)
+	insert into mycountry (select code, name, continent, population, gnp from country where continent='Asia')
+
+加入資料('asia'是代表全部帶入 asia, population*0.5是自己隨意乘的)
+	insert into mycountry(code, name, continent, population, gnp) select countrycode, name, 'asia', population, population*0.5 from city where countrycode='TWN'
+
+面試考題:
+	正面:
+		1. select max(業績) from 全聯門市業績
+		2. select 門市名稱, sum(業績) from 全聯門市業績 group by 門市名稱
+		3. select *,(業績/來客數) 客單 from 全聯門市業績 where (業績/來客數)>300
+		加入排名欄位
+		4. select *, row_number() over(order by 業績 desc) 排名 from 全聯門市業績 order by 業績 desc
+
+	背面:
+		無法利用索引的函式: 
+			1. 使用 NOT 、!=、not in、not like 等負向判斷詞
+			SELECT * FROM users WHERE name != 'John';
+			2. 使用函數語句包裝被索引的欄位
+			SELECT * FROM users WHERE DATE(created_at) = '2022-02-28';
+			3. 資料類型錯誤
+			SELECT * FROM users WHERE age = 30;
+			4. 使用 『 %XXX% 』或是 『 %XXX 』
+			SELECT * FROM users WHERE name like '%john%';
+			5. 使用 Null
+			SELECT * FROM users WHERE name IS NULL;
+			6. 針對索引欄位做運算
+			SELECT * FROM users WHERE height - 10 > 150;
+		下方題目:
+			1. select * from TableA where 銷售量>=500
+			2. select * from tablea where 銷售量=(select max(銷售量) from tablea)
+			3. select max(銷售量) 最大銷售, min(庫存量) 最小庫存 from TableA
+			查詢空值欄位是用is null
+			4. select tablea.* from tablea inner join tablec on tablea.門市代號=tablec.門市代號 where tablec.閉店日 is null
+			使用substr分隔欄位 拆成1-3和4-6
+			5. select substr(tableb.處區 from 1 for 3) as 處, substr(tableb.處區 from 4 for 3) as 區,tableb.門市代號, tableb.門市, tablea.銷售量, tablea.庫存量 from tableb inner join tablea on tablea.門市代號=tableb.門市代號 order by tablea.銷售量 desc
+			
+alter table 修改結構
+	mysql> alter table students add dep varchar(10) not null;
+
+	mysql> alter table students add score int default 72;
+
+修改欄位名稱 先打原本名稱 再打要改成甚麼名字 後面是儲存類型
+	mysql> alter table students change score myscores int;
+	Query OK, 0 rows affected (0.02 sec)
+	Records: 0  Duplicates: 0  Warnings: 0
+
+	mysql> show columns from students;
+	+----------+--------------+------+-----+---------+----------------+
+	| Field    | Type         | Null | Key | Default | Extra          |
+	+----------+--------------+------+-----+---------+----------------+
+	| id       | int(11)      | NO   | PRI | NULL    | auto_increment |
+	| name     | varchar(50)  | YES  |     | NULL    |                |
+	| sex      | varchar(2)   | NO   |     | NULL    |                |
+	| age      | int(2)       | YES  |     | NULL    |                |
+	| birthday | date         | YES  |     | NULL    |                |
+	| address  | varchar(255) | YES  |     | NULL    |                |
+	| dep      | varchar(10)  | YES  |     | NULL    |                |
+	| contact  | varchar(20)  | NO   |     | NULL    |                |
+	| myscores | int(11)      | YES  |     | NULL    |                |
+	+----------+--------------+------+-----+---------+----------------+
+	9 rows in set (0.00 sec)
+	
+要改名字用上面的 change 只改資料型態的用下面的modify
+	mysql> alter table students change price price int;
+	Query OK, 9 rows affected (0.08 sec)
+	Records: 9  Duplicates: 0  Warnings: 0
+
+	mysql> alter table students modify price varchar(50);
+	Query OK, 9 rows affected (0.11 sec)
+	Records: 9  Duplicates: 0  Warnings: 0
+
+刪除特定欄位
+	mysql> alter table students drop column price;
+	Query OK, 0 rows affected (0.20 sec)
+	Records: 0  Duplicates: 0  Warnings: 0
+
+修改表格名稱
+	mysql> rename table students to student;
+	Query OK, 0 rows affected (0.04 sec)
+
+抓取現在月份的壽星
+	mysql> select * from student where month(birthday) = month(current_date());
+	+----+-----------+-----+------+------------+--------------------------------------+------+---------+----------+
+	| id | name      | sex | age  | birthday   | address                              | dep  | contact | myscores |
+	+----+-----------+-----+------+------------+--------------------------------------+------+---------+----------+
+	|  1 | Bill      | F   |   20 | 1996-03-11 | 台中市中區建國路101號                | NULL |         |       72 |
+	|  4 | Mary      | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            | NULL |         |       72 |
+	|  7 | 張惠妹    | F   |   40 | 2024-03-13 | 台東市更生路1號                      | NULL |         |       72 |
+	+----+-----------+-----+------+------------+--------------------------------------+------+---------+----------+
+	3 rows in set (0.01 sec)
+	
+抓取特定月份的壽星
+	mysql> select * from student where month(birthday) between 3 and 6;
+	+----+-----------+-----+------+------------+--------------------------------------+------+---------+----------+
+	| id | name      | sex | age  | birthday   | address                              | dep  | contact | myscores |
+	+----+-----------+-----+------+------------+--------------------------------------+------+---------+----------+
+	|  1 | Bill      | F   |   20 | 1996-03-11 | 台中市中區建國路101號                | NULL |         |       72 |
+	|  4 | Mary      | F   |   22 | 2000-03-11 | 台北市大安區忠孝東路100號            | NULL |         |       72 |
+	|  6 | Jonh      | M   |   30 | 1993-06-22 | 台南市東區中山路87號                 | NULL |         |       72 |
+	|  7 | 張惠妹    | F   |   40 | 2024-03-13 | 台東市更生路1號                      | NULL |         |       72 |
+	+----+-----------+-----+------+------------+--------------------------------------+------+---------+----------+
+	4 rows in set (0.00 sec)
+
+日期相減
+	mysql> select datediff((select birthday from student where id=13),(select birthday from student where id=14));
+	+-------------------------------------------------------------------------------------------------+
+	| datediff((select birthday from student where id=13),(select birthday from student where id=14)) |
+	+-------------------------------------------------------------------------------------------------+
+	|                                                                                              -1 |
+	+-------------------------------------------------------------------------------------------------+
+
+距離現在(2024-03-22)差+1天
+	mysql> select * from student where date(birthday) = date_add(current_date(), interval 1 day);
+	+----+--------+-----+------+------------+---------+--------+---------+----------+
+	| id | name   | sex | age  | birthday   | address | dep    | contact | myscores |
+	+----+--------+-----+------+------------+---------+--------+---------+----------+
+	| 13 | Eminem | M   |   25 | 2024-03-23 | 美國    | 饒舌   |         |     NULL |
+	+----+--------+-----+------+------------+---------+--------+---------+----------+
+	1 row in set (0.00 sec)
+
+距離現在(2024-03-22)差-1天 可以add -1 或是sub 1
+	mysql> select * from student where date(birthday) = date_add(current_date(), interval -1 day);
+	+----+-------+-----+------+------------+---------+--------+---------+----------+
+	| id | name  | sex | age  | birthday   | address | dep    | contact | myscores |
+	+----+-------+-----+------+------------+---------+--------+---------+----------+
+	| 11 | Tyson | M   |   26 | 2024-03-21 | 美國    | 拳擊   |         |     NULL |
+	+----+-------+-----+------+------------+---------+--------+---------+----------+
+	1 row in set (0.01 sec)
+
+	mysql> select * from student where date(birthday) = date_sub(current_date(), interval 1 day);
+	+----+-------+-----+------+------------+---------+--------+---------+----------+
+	| id | name  | sex | age  | birthday   | address | dep    | contact | myscores |
+	+----+-------+-----+------+------------+---------+--------+---------+----------+
+	| 11 | Tyson | M   |   26 | 2024-03-21 | 美國    | 拳擊   |         |     NULL |
+	+----+-------+-----+------+------------+---------+--------+---------+----------+
+	1 row in set (0.00 sec)
+	
+建立view，建立完後可以在table查詢到，裡面的值是和指定的table連動，改變參考的資料表就會改變view的資料
+	mysql> create view mystudent(name, sex, age) as (select name, sex, age from student where sex='F');
+	Query OK, 0 rows affected (0.02 sec)
+	
+	mysql> show tables;
+	+------------------+
+	| Tables_in_lccsql |
+	+------------------+
+	| course           |
+	| lesson           |
+	| mystudent        |
+	| store            |
+	| student          |
+	| teacher          |
+	+------------------+
+	6 rows in set (0.00 sec)
+
+	mysql> show columns from mystudent;
+	+-------+-------------+------+-----+---------+-------+
+	| Field | Type        | Null | Key | Default | Extra |
+	+-------+-------------+------+-----+---------+-------+
+	| name  | varchar(50) | YES  |     | NULL    |       |
+	| sex   | varchar(2)  | NO   |     | NULL    |       |
+	| age   | int(2)      | YES  |     | NULL    |       |
+	+-------+-------------+------+-----+---------+-------+
+	3 rows in set (0.01 sec)
+
+刪除view
+	mysql> drop view mystudent;
+	Query OK, 0 rows affected (0.02 sec)
+	
+view結合inner join
+	mysql> create view mycourse(name, title, area, opendate) as (select student.name, lesson.title, course.area, course.opendate from course inner join student on course.sid = student.id inner join lesson on course.lessonid=lesson.id);
+	Query OK, 0 rows affected (0.02 sec)
+	
+建立並查看索引值(建立索引值可以讓查詢速度加快 資料量十分龐大的時候要使用)
+	mysql> create index stuindex on student(sex, age, birthday, address);
+	Query OK, 0 rows affected (0.05 sec)
+	Records: 0  Duplicates: 0  Warnings: 0
+
+	mysql> show index from student;
+	+---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+	| Table   | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
+	+---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+	| student |          0 | PRIMARY  |            1 | id          | A         |           9 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+	| student |          1 | stuindex |            1 | sex         | A         |           2 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+	| student |          1 | stuindex |            2 | age         | A         |           9 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
+	| student |          1 | stuindex |            3 | birthday    | A         |          14 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
+	| student |          1 | stuindex |            4 | address     | A         |          14 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
+	+---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+	5 rows in set (0.02 sec)
+
+刪除索引值
+	mysql> drop index stuindex on student;
+	Query OK, 0 rows affected (0.03 sec)
+	Records: 0  Duplicates: 0  Warnings: 0
+
+	mysql> show index from student;
+	+---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+	| Table   | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
+	+---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+	| student |          0 | PRIMARY  |            1 | id          | A         |           9 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+	+---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+	1 row in set (0.01 sec)
+	
+SQL trigger 觸發
+
+SQL Server 預存程序(Stored Procedure)
